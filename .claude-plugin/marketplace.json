@@ -1,0 +1,14 @@
+{
+  "name": "mlthompson-fact-check",
+  "description": "A source-verified fact-checking skill for Claude Code",
+  "owner": {
+    "name": "Michael L. Thompson"
+  },
+  "plugins": [
+    {
+      "name": "fact-check",
+      "source": "./plugins/fact-check",
+      "description": "Check a claim against the record, with every source read in full and a shareable cited page"
+    }
+  ]
+}

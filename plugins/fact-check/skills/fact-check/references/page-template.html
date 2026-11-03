@@ -1,0 +1,224 @@
+<!--
+  /fact-check page template. Copy to the scratchpad, fill every {{…}} slot,
+  delete this comment, and publish with the Artifact tool.
+
+  - Keep the <style> block whole. The tokens give light and dark themes, and
+    the dashed "bag" labels are the one subject-specific ornament. Change the
+    .bags strip to something drawn from the new subject's own world (two
+    product labels, two headlines, two document stamps), or delete it.
+  - One example row is shown in each repeated structure. Repeat the row; do
+    not add new kinds of element.
+  - Status tags (use only these classes):
+      t-ok   Accurate
+      t-warn Uncertain | Overstated | Understated | High end | Loose | Unsettled
+      t-bad  Invented | False | Misattributed
+      t-muted Unverified | Referred
+    Misattributed: the words or idea exist but belong to someone else, or to
+    a headline rather than the speaker. Unsettled: the deciding authority
+    has not decided. Referred: the escalation rule sent this row to a full
+    analysis (SKILL.md Step 4).
+  - Hypothesis weights are words, never percentages: Ruled out | Unlikely |
+    Open | Favored | Clearly favored.
+  - Keep both <style> blocks. link_citations.py sees the second one and does
+    not add it again.
+  - Write citations as plain [N] while drafting. When the prose is final, run
+      python3 -I <this skill's folder>/scripts/link_citations.py PAGE.html
+    It links every [N] to Sources entry N and numbers the entries' ids. Never
+    hand-write the links.
+  - Every Sources entry carries a .status line saying how it was verified.
+  Worked example: the 1973 Michigan PBB fact check,
+  https://claude.ai/artifact/9mWysBde6H1qBabVmapCmU
+-->
+<title>{{Name of the event or claim, 2–4 words}}</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@600;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column, set like a lab report. Evidence tags and the stenciled label strip are the only ornament. */
+:root {
+  --bg: #f6f6f3;
+  --surface: #ecebe5;
+  --fg: #1f2329;
+  --muted: #5a5f66;
+  --rule: #cfccc2;
+  --kraft: #8a6131;
+  --kraft-soft: #e7dcc8;
+  --ink: #23466e;
+  --ok: #2f6b45;
+  --warn: #8a5a00;
+  --bad: #a3322a;
+  --display: "Big Shoulders Stencil Display", "Arial Narrow", Impact, sans-serif;
+  --body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #16181b; --surface: #1f2226; --fg: #e6e4de; --muted: #a3a6ab; --rule: #3a3d42;
+    --kraft: #d1a46a; --kraft-soft: #33291c; --ink: #8fb4e0; --ok: #7cc196; --warn: #e2b155; --bad: #f08a80;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #16181b; --surface: #1f2226; --fg: #e6e4de; --muted: #a3a6ab; --rule: #3a3d42;
+  --kraft: #d1a46a; --kraft-soft: #33291c; --ink: #8fb4e0; --ok: #7cc196; --warn: #e2b155; --bad: #f08a80;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--body); font-size: 1.0625rem; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 2.5rem 4rem;
+}
+main { max-width: 46rem; margin: 0 auto; display: grid; gap: 2.75rem; }
+section { display: grid; gap: 1rem; min-width: 0; }
+h1, h2 { font-family: var(--display); font-weight: 800; letter-spacing: 0.02em; text-wrap: balance; line-height: 1.05; margin: 0; }
+h1 { font-size: clamp(2.4rem, 7vw, 3.6rem); }
+h2 { font-size: 1.85rem; color: var(--kraft); }
+h3 { font-size: 1.1rem; margin: 0.5rem 0 0; }
+p { margin: 0; max-width: 65ch; }
+a { color: var(--ink); text-underline-offset: 2px; }
+a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.eyebrow { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+header { display: grid; gap: 1rem; }
+.lede { font-size: 1.2rem; }
+.bags { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.bag {
+  font-family: var(--display); font-weight: 600; font-size: 1.15rem; letter-spacing: 0.12em;
+  background: var(--kraft-soft); color: var(--ink); border: 1px dashed var(--kraft);
+  padding: 0.45rem 0.9rem; border-radius: 2px;
+}
+.bag small { display: block; font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.04em; color: var(--muted); font-weight: 400; }
+.verdict { border-left: 4px solid var(--kraft); background: var(--surface); padding: 1.1rem 1.25rem; display: grid; gap: 0.6rem; }
+.verdict strong { font-weight: 600; }
+.scope { font-size: 0.92rem; color: var(--muted); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding-block: 0.7rem; max-width: none; }
+.wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 3px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; vertical-align: top; padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--rule); }
+tr:last-child td { border-bottom: 0; }
+th { font-family: var(--mono); font-weight: 500; font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--surface); }
+td.claim { width: 32%; }
+.num { font-variant-numeric: tabular-nums; }
+.tag { display: inline-block; font-family: var(--mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; padding: 0.1rem 0.45rem; border: 1px solid currentColor; border-radius: 2px; white-space: nowrap; }
+.t-ok { color: var(--ok); } .t-warn { color: var(--warn); } .t-bad { color: var(--bad); } .t-muted { color: var(--muted); }
+ul.plain { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.4rem; max-width: 65ch; }
+.levels { display: grid; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.levels li { display: grid; grid-template-columns: 2.6rem 1fr; gap: 0.75rem; align-items: baseline; }
+.levels b { font-family: var(--mono); font-weight: 500; color: var(--kraft); }
+.refs { margin: 0; padding-left: 1.6rem; display: grid; gap: 0.6rem; font-size: 0.93rem; }
+.refs li { padding-left: 0.2rem; overflow-wrap: anywhere; }
+.refs .status { font-family: var(--mono); font-size: 0.74rem; color: var(--muted); display: block; }
+footer { font-size: 0.88rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 1rem; }
+@media (max-width: 520px) { td.claim { width: auto; } }
+</style>
+<style id="cite-links">
+a.cite { text-decoration: none; font-variant-numeric: tabular-nums; }
+a.cite:hover, a.cite:focus-visible { text-decoration: underline; }
+.refs li { scroll-margin-top: 1.5rem; }
+.refs li:target { background: var(--kraft-soft, #e7dcc8); outline: 2px solid var(--kraft, #8a6131); outline-offset: 4px; border-radius: 2px; }
+</style>
+
+<main>
+<header>
+  <p class="eyebrow">Fact check · prepared {{D Month YYYY}}</p>
+  <h1>{{Same name as the title}}</h1>
+  <p class="lede">{{One or two sentences: what the account claims, then the question "Did that happen?" or its equivalent.}}</p>
+  <div class="bags" aria-label="{{what the labels are}}">
+    <span class="bag">{{LABEL ONE}}<small>{{gloss}}</small></span>
+    <span class="bag">{{LABEL TWO}}<small>{{gloss}}</small></span>
+  </div>
+</header>
+
+<section class="verdict" aria-labelledby="v">
+  <h2 id="v">Verdict</h2>
+  <p><strong>{{One-sentence answer.}}</strong> {{What the record confirms, cited.}}</p>
+  <p><strong>{{The most serious error, if any.}}</strong> {{What the record shows instead, cited.}}</p>
+  <p><strong>{{The lesser problems, grouped.}}</strong> {{One or two sentences.}}</p>
+  <p>Weighing the hypotheses below, "{{the leading hypothesis in plain words}}" is {{clearly favored | favored}}.</p>
+  <!-- When the escalation rule applies, replace the line above with:
+  <p>This check settles {{the factual part}}. It does not settle {{the referred question}}, which turns on {{interpretation at issue}} and needs a full analysis (see the note below).</p> -->
+</section>
+
+<p class="scope">This is a source-verified fact check, not a full Bayesian Framework for Intellectual Honesty (BFIH) analysis. Its hypothesis weights are judgements in words, not computed probabilities, and it ran no independent paradigm elicitation or adversarial challenge. {{REFERRAL SENTENCE}}</p>
+<!-- REFERRAL SENTENCE, one of:
+  No escalation: "Its verdict rests on what the records say, which is the question it is built to settle."
+  Escalation:    "Whether <the referred question> turns on contested interpretation, so it is referred to a full BFIH analysis." -->
+
+
+<section aria-labelledby="claims">
+  <h2 id="claims">Claim by claim</h2>
+  <div class="wrap">
+  <table>
+    <thead><tr><th>The account says</th><th>The record shows</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td class="claim">{{claim, close to the account's wording}}</td><td>{{what the sources show, with a short quote where it settles the point}} [N]</td><td><span class="tag t-ok">Accurate</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <h3>What the account leaves out</h3>
+  <ul class="plain">
+    <li>{{a material omission, cited}} [N]</li>
+  </ul>
+</section>
+
+<section aria-labelledby="method">
+  <h2 id="method">How I reached the verdict</h2>
+  <p>The review followed a five-step mandate: define the context, set up competing hypotheses, state a reasoning paradigm, gather evidence across levels, and weigh it.</p>
+
+  <h3>Context</h3>
+  <p>{{time span, places, actors, and any term whose meaning changes the answer}} [N]</p>
+
+  <h3>Hypotheses</h3>
+  <div class="wrap">
+  <table>
+    <thead><tr><th>Hypothesis</th><th>What it predicts</th><th>Weight</th></tr></thead>
+    <tbody>
+      <tr><td><b>H1</b> {{…}}</td><td>{{…}}</td><td>{{Ruled out | Unlikely | Open | Favored | Clearly favored}}</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>{{Optional. Delete when the skill's set for this claim type was used unchanged. Otherwise: one sentence on what was changed and why, and, for an attribution, the faithfulness standard applied.}}</p>
+
+  <h3>Paradigms</h3>
+  <p>{{One sentence naming the governing paradigm; one naming the opposing ones.}}</p>
+  <div class="wrap">
+  <table>
+    <thead><tr><th>Dimension</th><th>{{Mine}}</th><th>{{Opposite A}}</th><th>{{Opposite B}}</th></tr></thead>
+    <tbody>
+      <tr><td>Ontology</td><td>{{5–15 words}}</td><td>{{…}}</td><td>{{…}}</td></tr>
+      <tr><td>Epistemology</td><td>{{…}}</td><td>{{…}}</td><td>{{…}}</td></tr>
+      <tr><td>Axiology</td><td>{{…}}</td><td>{{…}}</td><td>{{…}}</td></tr>
+      <tr><td>Methodology</td><td>{{…}}</td><td>{{…}}</td><td>{{…}}</td></tr>
+      <tr><td>Sociology</td><td>{{…}}</td><td>{{…}}</td><td>{{…}}</td></tr>
+      <tr><td>Temporality</td><td>{{…}}</td><td>{{…}}</td><td>{{…}}</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>{{Where each opposing paradigm has a point, and where it fails, cited.}}</p>
+
+  <h3>Evidence levels</h3>
+  <ul class="levels">
+    <li><b>L1</b><span>{{…}}</span></li>
+  </ul>
+  <p>{{Which level the hypotheses predict most directly; coverage per level; the thinnest point.}}</p>
+
+  <h3>Weighing it</h3>
+  <ul class="plain">
+    <li><b>{{Hn is …}}</b> {{why, in one or two sentences}}</li>
+  </ul>
+</section>
+
+<section aria-labelledby="refs">
+  <h2 id="refs">Sources</h2>
+  <p>{{How sources were checked, and which ones blocked access and what replaced them.}}</p>
+  <ol class="refs">
+    <li>{{APA 7 entry with linked URL or DOI}}<span class="status">{{Full page read. | Full text of the PDF read. | Read on PubMed Central. | Replaces …}}</span></li>
+  </ol>
+</section>
+
+<footer>
+  <p>{{Residual uncertainty: figures not opened at their primary source, claims left unverified and why.}}</p>
+</footer>
+</main>
