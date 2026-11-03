@@ -1,8 +1,9 @@
 {
-  "name": "mlthompson-fact-check",
-  "description": "A source-verified fact-checking skill for Claude Code",
+  "name": "deciban-solutions",
+  "description": "Claude Code plug-ins from Deciban Solutions LLC",
   "owner": {
-    "name": "Michael L. Thompson"
+    "name": "Deciban Solutions LLC",
+    "url": "https://github.com/deciban-solutions"
   },
   "plugins": [
     {

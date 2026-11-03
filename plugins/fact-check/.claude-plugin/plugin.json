@@ -4,8 +4,11 @@
   "version": "0.1.0",
   "description": "Checks a pasted claim, quote, statistic or account against the documentary record: reads every cited source in full, weighs competing hypotheses in words, refers contested interpretation to a deeper analysis, and produces a shareable cited page.",
   "author": {
-    "name": "Michael L. Thompson"
+    "name": "Deciban Solutions LLC",
+    "url": "https://github.com/deciban-solutions"
   },
+  "homepage": "https://github.com/deciban-solutions/fact-check-plugin",
+  "repository": "https://github.com/deciban-solutions/fact-check-plugin",
   "license": "MIT",
   "keywords": ["fact-check", "verification", "citations", "intellectual-honesty", "bayesian"]
 }

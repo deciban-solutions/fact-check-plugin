@@ -9,22 +9,22 @@ A Claude Code plug-in that checks a claim against the documentary record. Paste 
 - **It knows its limits.** When the answer turns on contested interpretation (legality, intent, causation, values) rather than on what records say, the check settles the facts and refers the interpretive question to a deeper analysis instead of pretending to decide it.
 - **A page you can share.** The page follows a fixed layout: verdict, scope note, claim-by-claim table, omissions, method, sources with a note on how each was read, and remaining uncertainty. Every `[n]` links to its source.
 
-The method follows a five-step reconsideration mandate (context, hypotheses, paradigms, evidence gathered across levels of abstraction, and weighing), included in full in `plugins/fact-check/skills/fact-check/references/mandate.md`. It draws on the Bayesian Framework for Intellectual Honesty (BFIH). It is deliberately lighter than a full BFIH analysis: the weights are judgements in words, not computed probabilities, and every page says so.
+The method follows a five-step reconsideration mandate written by Michael L. Thompson (context, hypotheses, paradigms, evidence gathered across levels of abstraction, and weighing), included in full in `plugins/fact-check/skills/fact-check/references/mandate.md`. It draws on the Bayesian Framework for Intellectual Honesty (BFIH). It is deliberately lighter than a full BFIH analysis: the weights are judgements in words, not computed probabilities, and every page says so.
 
 ## Install
 
 In Claude Code:
 
 ```
-/plugin marketplace add <github-owner>/fact-check-plugin
-/plugin install fact-check@mlthompson-fact-check
+/plugin marketplace add deciban-solutions/fact-check-plugin
+/plugin install fact-check@deciban-solutions
 ```
 
 Or from your shell:
 
 ```bash
-claude plugin marketplace add <github-owner>/fact-check-plugin
-claude plugin install fact-check@mlthompson-fact-check
+claude plugin marketplace add deciban-solutions/fact-check-plugin
+claude plugin install fact-check@deciban-solutions
 ```
 
 ## Use
@@ -74,4 +74,4 @@ To try local changes without installing: `claude --plugin-dir ./plugins/fact-che
 
 ## License
 
-MIT. See `LICENSE`.
+MIT, © 2026 Deciban Solutions LLC. See `LICENSE`.
