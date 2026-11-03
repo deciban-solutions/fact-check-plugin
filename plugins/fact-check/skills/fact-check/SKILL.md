@@ -221,9 +221,12 @@ When it applies, do all of this:
 4. Share the page:
    - If an Artifact tool is available, publish the page with it and give the
      link. Say that the page is private until the user shares it.
-   - Otherwise, save the page as `fact-check-<short-name>.html` in the
-     current project (or wherever the user asks) and give its full path. It
-     is a single self-contained file that opens in any browser.
+   - Otherwise, rerun the linking step with `--standalone`, which adds the
+     doctype and UTF-8 charset that an Artifact host would otherwise supply.
+     Without them a browser may garble the page's quotes and dashes. Then
+     save the page as `fact-check-<short-name>.html` in the current project
+     (or wherever the user asks) and give its full path. It is a single
+     self-contained file that opens in any browser.
 
 When a follow-up corrects something you said earlier, say so plainly in the
 terminal and on the page. Do not quietly swap the wrong claim for the right

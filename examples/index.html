@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fact Check Examples</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@600;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column; each example is a filed report with a stenciled claim-type label. Same tokens as the reports. */
+:root {
+  --bg: #f6f6f3;
+  --surface: #ecebe5;
+  --fg: #1f2329;
+  --muted: #5a5f66;
+  --rule: #cfccc2;
+  --kraft: #8a6131;
+  --kraft-soft: #e7dcc8;
+  --ink: #23466e;
+  --ok: #2f6b45;
+  --warn: #8a5a00;
+  --display: "Big Shoulders Stencil Display", "Arial Narrow", Impact, sans-serif;
+  --body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #16181b; --surface: #1f2226; --fg: #e6e4de; --muted: #a3a6ab; --rule: #3a3d42;
+    --kraft: #d1a46a; --kraft-soft: #33291c; --ink: #8fb4e0; --ok: #7cc196; --warn: #e2b155;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #16181b; --surface: #1f2226; --fg: #e6e4de; --muted: #a3a6ab; --rule: #3a3d42;
+  --kraft: #d1a46a; --kraft-soft: #33291c; --ink: #8fb4e0; --ok: #7cc196; --warn: #e2b155;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg); color: var(--fg);
+  font-family: var(--body); font-size: 1.0625rem; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 2.5rem 4rem;
+}
+main { max-width: 46rem; margin: 0 auto; display: grid; gap: 2.5rem; }
+h1, h2 { font-family: var(--display); font-weight: 800; letter-spacing: 0.02em; line-height: 1.05; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2.4rem, 7vw, 3.4rem); }
+h2 { font-size: 1.7rem; }
+h2 a { color: var(--fg); text-decoration: none; }
+h2 a:hover, h2 a:focus-visible { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+p { margin: 0; max-width: 65ch; }
+a { color: var(--ink); text-underline-offset: 2px; }
+a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+header { display: grid; gap: 1rem; }
+.eyebrow { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.lede { font-size: 1.15rem; }
+.reports { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.25rem; }
+.report { border-top: 1px solid var(--rule); padding-top: 1.25rem; display: grid; gap: 0.7rem; }
+.meta { display: flex; flex-wrap: wrap; gap: 0.6rem 1rem; align-items: center; }
+.type {
+  font-family: var(--display); font-weight: 600; font-size: 0.95rem; letter-spacing: 0.12em; text-transform: uppercase;
+  background: var(--kraft-soft); color: var(--ink); border: 1px dashed var(--kraft);
+  padding: 0.15rem 0.6rem; border-radius: 2px;
+}
+.date { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+blockquote { margin: 0; padding-left: 1rem; border-left: 2px solid var(--rule); font-style: italic; color: var(--muted); max-width: 65ch; }
+.verdict { font-weight: 600; }
+.verdict .w { font-family: var(--mono); font-weight: 500; font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; padding: 0.05rem 0.4rem; border: 1px solid currentColor; border-radius: 2px; white-space: nowrap; }
+.w.fav { color: var(--ok); } .w.ref { color: var(--warn); }
+.links { display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; font-family: var(--mono); font-size: 0.85rem; }
+footer { font-size: 0.9rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 1rem; display: grid; gap: 0.6rem; }
+@media (prefers-reduced-motion: no-preference) { h2 a { transition: color 120ms ease; } }
+</style>
+
+<main>
+<header>
+  <p class="eyebrow">Fact Check plug-in · example reports</p>
+  <h1>Fact Check Examples</h1>
+  <p class="lede">Three reports the skill produced while it was being built, each on a different kind of claim. Each page shows the verdict, the claim split into rows, the hypotheses and how they were weighed, and every source with a note on how it was read.</p>
+</header>
+
+<ol class="reports">
+  <li class="report">
+    <div class="meta"><span class="type">Event account</span><span class="date">Checked 2 November 2026</span></div>
+    <h2><a href="pbb-1973-feed-contamination.html">The 1973 PBB Mix-Up</a></h2>
+    <blockquote>A pasted chatbot answer: in 1973 a Michigan chemical plant shipped a toxic flame retardant in place of a cattle-feed supplement, poisoning the state's food supply.</blockquote>
+    <p class="verdict">True in substance, flawed in the details <span class="w fav">Clearly favored</span></p>
+    <p>The mix-up, the bags, the dates and the scale all check out against state, federal and 1970s records. The account invents a "pandemic-related" paper shortage, understates the eggs destroyed, and gives an exposure figure that contradicts its own percentage.</p>
+    <p class="links"><a href="pbb-1973-feed-contamination.html">Read the report</a><a href="https://claude.ai/artifact/9mWysBde6H1qBabVmapCmU">Published version</a></p>
+  </li>
+
+  <li class="report">
+    <div class="meta"><span class="type">Attribution</span><span class="date">Checked 2 November 2026</span></div>
+    <h2><a href="altman-ram-remark.html">Altman and Your RAM</a></h2>
+    <blockquote>"Sam Altman of OpenAI believes individual computer owners should not have RAM and be limited only to access of externally owned and controlled cloud resources."</blockquote>
+    <p class="verdict">A real remark, materially exaggerated <span class="w fav">Clearly favored</span></p>
+    <p>On a podcast he called it "quite terrible" for scarce memory to sit idle in personal computers during a shortage. "Should not have RAM" appears in no source of his words. It traces to a headline. And he said in the same interview that he wants AI to work on his own computer.</p>
+    <p class="links"><a href="altman-ram-remark.html">Read the report</a><a href="https://claude.ai/artifact/DguRVdk2f6TgxRSvAS9b5j">Published version</a></p>
+  </li>
+
+  <li class="report">
+    <div class="meta"><span class="type">Practice with a label</span><span class="date">Checked 2 November 2026</span></div>
+    <h2><a href="ice-immediate-rearrests.html">ICE Instant Re-arrests</a></h2>
+    <blockquote>"ICE is unlawfully reimprisoning immigrants immediately after their court-ordered release."</blockquote>
+    <p class="verdict">The conduct is established; its legality is referred <span class="w ref">Referred</span></p>
+    <p>Re-arrests within minutes of court-ordered release are documented in Minnesota, and the judges who have ruled found they violated their orders. No appeals court has decided the question, so the check settles the facts and refers "unlawfully" to a full analysis instead of deciding it.</p>
+    <p class="links"><a href="ice-immediate-rearrests.html">Read the report</a></p>
+  </li>
+</ol>
+
+<footer>
+  <p>These are the pages the skill produced during development, before it was packaged as a plug-in. The current page template was built from them, and the lessons from each run went into the skill. Two sentences that described the skill's earlier set of claim types were updated to the current wording. The reports are dated 2 November 2026 and reflect the record on that date.</p>
+  <p>Each report is a fact check, not a full Bayesian Framework for Intellectual Honesty (BFIH) analysis: hypothesis weights are judgements in words, not computed probabilities.</p>
+</footer>
+</main>

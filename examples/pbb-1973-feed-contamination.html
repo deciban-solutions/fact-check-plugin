@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The 1973 PBB Mix-Up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@600;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column, set like a 1970s lab report. Kraft-paper evidence tags and stenciled bag labels are the only ornament. */
+:root {
+  --bg: #f6f6f3;
+  --surface: #ecebe5;
+  --fg: #1f2329;
+  --muted: #5a5f66;
+  --rule: #cfccc2;
+  --kraft: #8a6131;
+  --kraft-soft: #e7dcc8;
+  --ink: #23466e;
+  --ok: #2f6b45;
+  --warn: #8a5a00;
+  --bad: #a3322a;
+  --display: "Big Shoulders Stencil Display", "Arial Narrow", Impact, sans-serif;
+  --body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #16181b; --surface: #1f2226; --fg: #e6e4de; --muted: #a3a6ab; --rule: #3a3d42;
+    --kraft: #d1a46a; --kraft-soft: #33291c; --ink: #8fb4e0; --ok: #7cc196; --warn: #e2b155; --bad: #f08a80;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #16181b; --surface: #1f2226; --fg: #e6e4de; --muted: #a3a6ab; --rule: #3a3d42;
+  --kraft: #d1a46a; --kraft-soft: #33291c; --ink: #8fb4e0; --ok: #7cc196; --warn: #e2b155; --bad: #f08a80;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--body); font-size: 1.0625rem; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 2.5rem 4rem;
+}
+main { max-width: 46rem; margin: 0 auto; display: grid; gap: 2.75rem; }
+section { display: grid; gap: 1rem; min-width: 0; }
+h1, h2 { font-family: var(--display); font-weight: 800; letter-spacing: 0.02em; text-wrap: balance; line-height: 1.05; margin: 0; }
+h1 { font-size: clamp(2.4rem, 7vw, 3.6rem); }
+h2 { font-size: 1.85rem; color: var(--kraft); }
+h3 { font-size: 1.1rem; margin: 0.5rem 0 0; }
+p { margin: 0; max-width: 65ch; }
+a { color: var(--ink); text-underline-offset: 2px; }
+a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.eyebrow { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+header { display: grid; gap: 1rem; }
+.lede { font-size: 1.2rem; }
+.bags { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.bag {
+  font-family: var(--display); font-weight: 600; font-size: 1.15rem; letter-spacing: 0.12em;
+  background: var(--kraft-soft); color: var(--ink); border: 1px dashed var(--kraft);
+  padding: 0.45rem 0.9rem; border-radius: 2px;
+}
+.bag small { display: block; font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.04em; color: var(--muted); font-weight: 400; }
+.verdict { border-left: 4px solid var(--kraft); background: var(--surface); padding: 1.1rem 1.25rem; display: grid; gap: 0.6rem; }
+.verdict strong { font-weight: 600; }
+.scope { font-size: 0.92rem; color: var(--muted); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding-block: 0.7rem; max-width: none; }
+.wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 3px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; vertical-align: top; padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--rule); }
+tr:last-child td { border-bottom: 0; }
+th { font-family: var(--mono); font-weight: 500; font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--surface); }
+td.claim { width: 32%; }
+.num { font-variant-numeric: tabular-nums; }
+.tag { display: inline-block; font-family: var(--mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; padding: 0.1rem 0.45rem; border: 1px solid currentColor; border-radius: 2px; white-space: nowrap; }
+.t-ok { color: var(--ok); } .t-warn { color: var(--warn); } .t-bad { color: var(--bad); } .t-muted { color: var(--muted); }
+ul.plain { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.4rem; max-width: 65ch; }
+blockquote { margin: 0; padding: 0.2rem 0 0.2rem 1rem; border-left: 2px solid var(--rule); color: var(--muted); font-style: italic; max-width: 65ch; }
+.levels { display: grid; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.levels li { display: grid; grid-template-columns: 2.6rem 1fr; gap: 0.75rem; align-items: baseline; }
+.levels b { font-family: var(--mono); font-weight: 500; color: var(--kraft); }
+.refs { margin: 0; padding-left: 1.6rem; display: grid; gap: 0.6rem; font-size: 0.93rem; }
+.refs li { padding-left: 0.2rem; overflow-wrap: anywhere; }
+.refs .status { font-family: var(--mono); font-size: 0.74rem; color: var(--muted); display: block; }
+footer { font-size: 0.88rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 1rem; }
+@media (max-width: 520px) { td.claim { width: auto; } }
+</style>
+<style id="cite-links">
+a.cite { text-decoration: none; font-variant-numeric: tabular-nums; }
+a.cite:hover, a.cite:focus-visible { text-decoration: underline; }
+.refs li { scroll-margin-top: 1.5rem; }
+.refs li:target { background: var(--kraft-soft, #e7dcc8); outline: 2px solid var(--kraft, #8a6131); outline-offset: 4px; border-radius: 2px; }
+</style>
+
+<main>
+<header>
+  <p class="eyebrow">Fact check · prepared 2 November 2026</p>
+  <h1>The 1973 PBB Mix-Up</h1>
+  <p class="lede">A widely shared account says a flame retardant was shipped in place of a cattle-feed supplement in Michigan in 1973 and poisoned the state's food supply. Did that happen?</p>
+  <div class="bags" aria-label="The two products, as stenciled on plain brown 50-pound bags">
+    <span class="bag">FIREMASTER<small>PBB flame retardant</small></span>
+    <span class="bag">NUTRIMASTER<small>magnesium oxide feed supplement</small></span>
+  </div>
+</header>
+
+<section class="verdict" aria-labelledby="v">
+  <h2 id="v">Verdict</h2>
+  <p><strong>Yes, it happened, and the core of the account is accurate.</strong> Michigan Chemical shipped FireMaster in place of NutriMaster in 1973. Both were in plain brown bags with stenciled names. The PBB went into dairy feed, nobody identified it until April 1974, and roughly 30,000 cattle and 1.5 million chickens were destroyed <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-2">[2]</a>.</p>
+  <p><strong>One detail is invented.</strong> The paper shortage was real, but nothing in the record calls it "pandemic-related." There was no pandemic in 1973. A 1978 source describes a general shortage "of paper bags, as well as many other things" that year <a class="cite" href="#ref-4">[4]</a>.</p>
+  <p><strong>Several figures are loose.</strong> Destroyed eggs are understated, and the exposure figure is at the top of the published range. The account also leaves out how the poison was found and the cover-up indictment that followed.</p>
+  <p>Weighing the hypotheses below, "true in substance, flawed in the details" is clearly favored.</p>
+</section>
+
+<p class="scope">This is a source-verified fact check, not a full Bayesian Framework for Intellectual Honesty (BFIH) analysis. Its hypothesis weights are judgements in words, not computed probabilities, and it ran no independent paradigm elicitation or adversarial challenge. Its verdict rests on what the records say, which is the question it is built to settle.</p>
+
+<section aria-labelledby="claims">
+  <h2 id="claims">Claim by claim</h2>
+  <div class="wrap">
+  <table>
+    <thead><tr><th>The account says</th><th>The record shows</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td class="claim">FireMaster and NutriMaster, both made at the St. Louis, Michigan plant</td><td>Confirmed by the state health department, its 1977 director, and a 1978 eyewitness account <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-2">[2]</a><a class="cite" href="#ref-4">[4]</a>. The firm was Michigan Chemical Company, later part of Velsicol.</td><td><span class="tag t-ok">Accurate</span></td></tr>
+      <tr><td class="claim">Identical plain brown 50-lb bags, trade names stenciled on</td><td>"In early 1973, because of a paper shortage, there was a delay in the receipt of preprinted bags… the trade names of the compounds were stenciled on the plain brown bags used" <a class="cite" href="#ref-2">[2]</a>. A 1978 account adds "poorly stenciled, as it turned out" <a class="cite" href="#ref-4">[4]</a>.</td><td><span class="tag t-ok">Accurate</span></td></tr>
+      <tr><td class="claim">A "pandemic-related" paper shortage</td><td>No source mentions a pandemic, and there was none in 1973. The shortage was part of the general shortages of that year <a class="cite" href="#ref-4">[4]</a>.</td><td><span class="tag t-bad">Invented</span></td></tr>
+      <tr><td class="claim">Names stenciled in blue ink</td><td>No source I reached gives the ink colour. A 1979 report says only "similar labels and coding" <a class="cite" href="#ref-10">[10]</a>.</td><td><span class="tag t-muted">Unverified</span></td></tr>
+      <tr><td class="claim">"Several bags" shipped in May 1973</td><td>10 to 20 fifty-pound bags <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-2">[2]</a>; about 850 lb in another estimate <a class="cite" href="#ref-4">[4]</a>. Sources place the shipment anywhere from early 1973 <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-2">[2]</a> through late spring <a class="cite" href="#ref-3">[3]</a>, July <a class="cite" href="#ref-7">[7]</a> and late summer <a class="cite" href="#ref-5">[5]</a> to fall <a class="cite" href="#ref-4">[4]</a>. May falls inside that range.</td><td><span class="tag t-warn">Uncertain</span></td></tr>
+      <tr><td class="claim">Cows refused feed, lost weight and milk, had skin and reproductive problems</td><td>Herds sickened in fall 1973 <a class="cite" href="#ref-2">[2]</a>. A 1978 report describes cows losing hair, hooves "curling up like skis," and abortions <a class="cite" href="#ref-4">[4]</a>.</td><td><span class="tag t-ok">Accurate</span></td></tr>
+      <tr><td class="claim">Identified "nearly a year later," in April 1974</td><td>"It was not until April 1974 that analysis confirmed the presence of PBB" <a class="cite" href="#ref-2">[2]</a>; the state gives the same date <a class="cite" href="#ref-1">[1]</a>.</td><td><span class="tag t-ok">Accurate</span></td></tr>
+      <tr><td class="claim num">30,000 cattle, 1.5 million chickens, thousands of pigs and sheep destroyed</td><td class="num">About 30,000 cattle, 4,500 pigs, 1,500 sheep and 1.5 million chickens <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-2">[2]</a><a class="cite" href="#ref-6">[6]</a>. Over 500 farms were quarantined <a class="cite" href="#ref-1">[1]</a>.</td><td><span class="tag t-ok">Accurate</span></td></tr>
+      <tr><td class="claim num">800+ tons of feed and 4 million eggs destroyed</td><td class="num">Over 800 tons of feed, 18,000 lb of cheese, 2,500 lb of butter, 34,000 lb of dried milk and <b>5 million</b> eggs <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-2">[2]</a>.</td><td><span class="tag t-warn">Eggs understated</span></td></tr>
+      <tr><td class="claim num">9 million residents, "roughly 90%," exposed</td><td class="num">Published estimates of how many people ate contaminated food run from 8 million <a class="cite" href="#ref-8">[8]</a> to 8.5 million <a class="cite" href="#ref-9">[9]</a>. The state's director estimated in 1977 that about 95% of Lower Peninsula residents had been exposed <a class="cite" href="#ref-2">[2]</a>. A 1978 statewide survey found no detectable PBB in 30% of people tested <a class="cite" href="#ref-1">[1]</a>. Michigan had about 8.9 million residents in 1970 and 9.3 million in 1980 (census), so 9 million would be nearly everyone, not 90%.</td><td><span class="tag t-warn">High end, internally loose</span></td></tr>
+      <tr><td class="claim">Long-term links to certain cancers, thyroid and reproductive problems</td><td>Registry studies associate PBB with breast cancer, lymphoma and digestive cancers; thyroid problems; earlier first periods and more miscarriages among daughters; and genitourinary conditions in sons <a class="cite" href="#ref-11">[11]</a><a class="cite" href="#ref-3">[3]</a>.</td><td><span class="tag t-ok">Accurate</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <h3>What the account leaves out</h3>
+  <ul class="plain">
+    <li>The discovery came from a farmer. Rick Halbert, who held an M.S. in biochemistry, kept sending samples to private laboratories until George Fries at the U.S. Department of Agriculture recognized the bromine signal as PBB <a class="cite" href="#ref-4">[4]</a>. Halbert had ordered his own bags of what he thought was magnesium oxide, and his cows probably got the highest dose <a class="cite" href="#ref-5">[5]</a>.</li>
+    <li>In April 1979 a federal grand jury indicted Velsicol and two of its plant managers, Charles Touzeau and William Thorne, for concealing facts from Food and Drug Administration investigators and conspiring to defraud the government's investigation <a class="cite" href="#ref-10">[10]</a>. No Farm Bureau employee was named in that indictment.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="method">
+  <h2 id="method">How I reached the verdict</h2>
+  <p>The review followed a five-step mandate: define the context, set up competing hypotheses, state a reasoning paradigm, gather evidence across levels, and weigh it.</p>
+
+  <h3>Context</h3>
+  <p>The events run from the shipment in 1973, through discovery in April 1974, to health follow-up that continues today. They involve the St. Louis, Michigan plant, Farm Bureau Services' Battle Creek feed mill, and farms and shoppers across the state <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-4">[4]</a><a class="cite" href="#ref-10">[10]</a>. "Exposed" here means having eaten contaminated food, which is broader than having a measured level of PBB in the body.</p>
+
+  <h3>Hypotheses</h3>
+  <div class="wrap">
+  <table>
+    <thead><tr><th>Hypothesis</th><th>What it predicts</th><th>Weight</th></tr></thead>
+    <tbody>
+      <tr><td><b>H1</b> Accurate in every material respect</td><td>Every figure and causal detail matches the primary record</td><td>Unlikely</td></tr>
+      <tr><td><b>H2</b> Core events true, some details wrong or invented</td><td>The record confirms the mix-up, the bags and the scale, but contradicts specific details</td><td><b>Clearly favored</b></td></tr>
+      <tr><td><b>H3</b> Core events false or legendary</td><td>No official, scientific or contemporary press record</td><td>Ruled out</td></tr>
+      <tr><td><b>H0</b> Something else, such as a deliberate substitution</td><td>Records pointing to intent; charges for the substitution itself</td><td>Unlikely</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Paradigms</h3>
+  <p>I reasoned as a source-critical Bayesian historian: weight each claim by how reliable and independent its sources are, and prefer records made at the time over later retellings. Two realistic opposing views would push back differently.</p>
+  <div class="wrap">
+  <table>
+    <thead><tr><th>Dimension</th><th>Source-critical Bayesian (mine)</th><th>Suspicious of institutions</th><th>The gist is what counts</th></tr></thead>
+    <tbody>
+      <tr><td>Ontology</td><td>Documented events and measured exposures are what is real</td><td>Concealed harms are real even where undocumented</td><td>The story's meaning matters more than its particulars</td></tr>
+      <tr><td>Epistemology</td><td>Belief scaled to source reliability and independence</td><td>Official figures are presumed to minimize harm</td><td>Plausibility and coherence are enough</td></tr>
+      <tr><td>Axiology</td><td>Accuracy first, even for small details</td><td>Exposing harm outweighs precision</td><td>The lesson outweighs precision</td></tr>
+      <tr><td>Methodology</td><td>Triangulate primary documents and peer-reviewed studies</td><td>Prefer testimony from farmers and victims</td><td>Accept secondary summaries</td></tr>
+      <tr><td>Sociology</td><td>Trust expert institutions, but audit them</td><td>Trust grassroots witnesses over state and industry</td><td>Trust whoever tells it well</td></tr>
+      <tr><td>Temporality</td><td>Records made at the time outweigh later retellings</td><td>Truth surfaces over decades, through litigation</td><td>The present-day retelling is what matters</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>The institution-skeptic view has a point: the company was indicted for concealment <a class="cite" href="#ref-10">[10]</a>, so official accounts deserve auditing. It does not rescue the "pandemic" detail, which no source of any kind supports. The gist-first view would call my objections nitpicks, but an invented cause is a substantive error rather than a rounding difference.</p>
+
+  <h3>Evidence levels</h3>
+  <ul class="levels">
+    <li><b>L1</b><span>Frameworks: PBB is fat-soluble and accumulates in milk, meat and eggs; and a general rule about how reliable different kinds of sources are.</span></li>
+    <li><b>L2</b><span>The hypotheses above: whether the account is accurate.</span></li>
+    <li><b>L3</b><span>Population patterns: statewide body-burden surveys and the long-term health registry <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-2">[2]</a><a class="cite" href="#ref-7">[7]</a><a class="cite" href="#ref-11">[11]</a>.</span></li>
+    <li><b>L4</b><span>Documented figures: state and federal counts, bag details, quantities <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-2">[2]</a><a class="cite" href="#ref-4">[4]</a><a class="cite" href="#ref-6">[6]</a>.</span></li>
+    <li><b>L5</b><span>Named people and acts: Halbert, the indicted managers, the delivery itself <a class="cite" href="#ref-4">[4]</a><a class="cite" href="#ref-5">[5]</a><a class="cite" href="#ref-10">[10]</a>.</span></li>
+  </ul>
+  <p>The hypotheses make their sharpest predictions at L4, so that is where most of the deciding evidence sits. Coverage is strong at L4 and L5 and adequate at L3. The exact size of the exposed population is the thinnest point, and published estimates disagree there.</p>
+
+  <h3>Weighing it</h3>
+  <ul class="plain">
+    <li><b>H3 is ruled out.</b> The state health department, a federal occupational-health publication, a contemporary trade-press account, a 1979 wire report and peer-reviewed registry studies all record the event independently.</li>
+    <li><b>H0 is strongly disfavored.</b> Every source calls the mix-up an accident. The 1979 charges were about concealment afterward, not about the substitution.</li>
+    <li><b>H2 beats H1</b> mainly because of the invented "pandemic" cause. That error is very unlikely if the account is accurate and typical of a retelling, especially a machine-generated one: the account ends by offering to tell more, which is how chatbot answers end.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="refs">
+  <h2 id="refs">Sources</h2>
+  <p>I checked every source below against its full text, and the note under each says how. Three pages blocked automated access (University of Michigan School of Public Health, American Archive of Public Broadcasting, and the Michigan State University library viewer). I dropped them or replaced them with sources I could read.</p>
+  <ol class="refs">
+    <li id="ref-1">Michigan Department of Health and Human Services. (n.d.). <i>The history of PBBs in Michigan</i>. Retrieved November 2, 2026, from <a href="https://www.michigan.gov/mdhhs/safety-injury-prev/environmental-health/topics/dehbio/pbbs/history">https://www.michigan.gov/mdhhs/safety-injury-prev/environmental-health/topics/dehbio/pbbs/history</a><span class="status">Full page read.</span></li>
+    <li id="ref-2">Wilcox, K. R., Jr. (1978). Industrial toxins and the community: The Michigan PBB incident. In T. C. Doege &amp; R. H. Wheater (Eds.), <i>Occupational safety and health symposia, 1977</i> (DHEW [NIOSH] Publication No. 78-169, pp. 283–295). National Institute for Occupational Safety and Health. <a href="https://stacks.cdc.gov/view/cdc/180195/cdc_180195_DS1.pdf">https://stacks.cdc.gov/view/cdc/180195/cdc_180195_DS1.pdf</a><span class="status">Full text of the scanned chapter read. The author was Michigan's director of public health. Page range is taken from the scan.</span></li>
+    <li id="ref-3">Williams, R. (2014, December 15). Researchers find serious health effects from toxic PBB mix-up in Michigan. <i>Michigan Public</i>. <a href="https://www.michiganpublic.org/environment-science/2014-12-15/researchers-find-serious-health-effects-from-toxic-pbb-mix-up-in-michigan">https://www.michiganpublic.org/environment-science/2014-12-15/researchers-find-serious-health-effects-from-toxic-pbb-mix-up-in-michigan</a><span class="status">Full page read. The "late spring of 1973" date comes from a quoted passage of Joyce Egginton's book.</span></li>
+    <li id="ref-4">Lehnert, R. (1978). The PBB story: <i>Michigan Farmer</i>'s investigative reporting scoops the nation. <i>Journal of Applied Communications, 61</i>(3), Article 4. <a href="https://doi.org/10.4148/1051-0834.1904">https://doi.org/10.4148/1051-0834.1904</a><span class="status">Full text read.</span></li>
+    <li id="ref-5">Corcoran, D. (Host). (2017, December 29). The poisoning of Michigan (No. 22) [Audio podcast episode]. In <i>Undark Podcast</i>. Undark. <a href="https://undark.org/2017/12/29/undark-podcast-episode-22/">https://undark.org/2017/12/29/undark-podcast-episode-22/</a><span class="status">Full transcript page read. The quoted material is reporter Carrie Arnold's.</span></li>
+    <li id="ref-6">McClung, K., &amp; Hosang, E. (2023, May 22). 1.5 million farm animals died in the worst agricultural disaster in Michigan history. <i>9&amp;10 News</i>. <a href="https://www.9and10news.com/2023/05/22/15-million-farm-animals-died-in-the-worst-agriculture-disaster-in-michigan-history/">https://www.9and10news.com/2023/05/22/15-million-farm-animals-died-in-the-worst-agriculture-disaster-in-michigan-history/</a><span class="status">Full page read.</span></li>
+    <li id="ref-7">Chang, C.-J., Terrell, M. L., Marcus, M., Marder, M. E., Panuwet, P., Ryan, P. B., Pearson, M., Barton, H., &amp; Barr, D. B. (2020). Serum concentrations of polybrominated biphenyls (PBBs), polychlorinated biphenyls (PCBs) and polybrominated diphenyl ethers (PBDEs) in the Michigan PBB Registry 40 years after the PBB contamination incident. <i>Environment International, 137</i>, Article 105526. <a href="https://doi.org/10.1016/j.envint.2020.105526">https://doi.org/10.1016/j.envint.2020.105526</a><span class="status">Author manuscript read on PubMed Central.</span></li>
+    <li id="ref-8">Lebow-Skelley, E., Fremion, B. B., Quinn, M., Makled, M., Keon, N. B., Jelenek, J., Crowley, J.-A., Pearson, M. A., &amp; Schulz, A. J. (2022). "They kept going for answers": Knowledge, capacity, and environmental health literacy in Michigan's PBB contamination. <i>International Journal of Environmental Research and Public Health, 19</i>(24), Article 16686. <a href="https://doi.org/10.3390/ijerph192416686">https://doi.org/10.3390/ijerph192416686</a><span class="status">Read on PubMed Central. It replaces the University of Michigan news page cited earlier, which blocked access.</span></li>
+    <li id="ref-9">Leslie, C. (n.d.). Michigan PBB disaster of 1973 revisited today. <i>Central Michigan University News</i>. <a href="https://www.cmich.edu/news/details/michigan-pbb-disaster-of-1973-revisited-today">https://www.cmich.edu/news/details/michigan-pbb-disaster-of-1973-revisited-today</a><span class="status">Full page read. The page shows no publication date.</span></li>
+    <li id="ref-10">United Press International. (1979, April 27). PBB manufacturer indicted in coverup. <i>The State News</i> (Michigan State University), 73(70), p. 1. <a href="https://archive.lib.msu.edu/DMC/state_news/1979/state_news_19790427.pdf">https://archive.lib.msu.edu/DMC/state_news/1979/state_news_19790427.pdf</a><span class="status">Front page of the scanned issue read. It replaces the library viewer link cited earlier, and it corrects my earlier statement that Farm Bureau employees were indicted.</span></li>
+    <li id="ref-11">Michigan PBB Research Registry, Emory University. (2024). <i>Information for clinicians: Michigan PBB contamination quick facts</i> [Fact sheet]. <a href="https://pbbregistry.emory.edu/documents/PBB_Clinicians_FactSheet.pdf">https://pbbregistry.emory.edu/documents/PBB_Clinicians_FactSheet.pdf</a><span class="status">Full text read. The year is taken from the PDF's metadata.</span></li>
+  </ol>
+</section>
+
+<footer>
+  <p>Michigan's 1970 and 1980 census totals (8,875,083 and 9,262,078) come from a census-based compilation found in search; I did not open the Census Bureau's own tables. A book quoted in search results says "virtually all nine million residents" ate contaminated food. I could not read that book, so it does not count toward the verdict.</p>
+</footer>
+</main>

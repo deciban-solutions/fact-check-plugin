@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Altman and Your RAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@600;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column, set like a lab report. Evidence tags and the stenciled label strip are the only ornament. */
+:root {
+  --bg: #f6f6f3;
+  --surface: #ecebe5;
+  --fg: #1f2329;
+  --muted: #5a5f66;
+  --rule: #cfccc2;
+  --kraft: #8a6131;
+  --kraft-soft: #e7dcc8;
+  --ink: #23466e;
+  --ok: #2f6b45;
+  --warn: #8a5a00;
+  --bad: #a3322a;
+  --display: "Big Shoulders Stencil Display", "Arial Narrow", Impact, sans-serif;
+  --body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #16181b; --surface: #1f2226; --fg: #e6e4de; --muted: #a3a6ab; --rule: #3a3d42;
+    --kraft: #d1a46a; --kraft-soft: #33291c; --ink: #8fb4e0; --ok: #7cc196; --warn: #e2b155; --bad: #f08a80;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #16181b; --surface: #1f2226; --fg: #e6e4de; --muted: #a3a6ab; --rule: #3a3d42;
+  --kraft: #d1a46a; --kraft-soft: #33291c; --ink: #8fb4e0; --ok: #7cc196; --warn: #e2b155; --bad: #f08a80;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--body); font-size: 1.0625rem; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 2.5rem 4rem;
+}
+main { max-width: 46rem; margin: 0 auto; display: grid; gap: 2.75rem; }
+section { display: grid; gap: 1rem; min-width: 0; }
+h1, h2 { font-family: var(--display); font-weight: 800; letter-spacing: 0.02em; text-wrap: balance; line-height: 1.05; margin: 0; }
+h1 { font-size: clamp(2.4rem, 7vw, 3.6rem); }
+h2 { font-size: 1.85rem; color: var(--kraft); }
+h3 { font-size: 1.1rem; margin: 0.5rem 0 0; }
+p { margin: 0; max-width: 65ch; }
+a { color: var(--ink); text-underline-offset: 2px; }
+a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.eyebrow { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+header { display: grid; gap: 1rem; }
+.lede { font-size: 1.2rem; }
+.bags { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.bag {
+  font-family: var(--display); font-weight: 600; font-size: 1.15rem; letter-spacing: 0.12em;
+  background: var(--kraft-soft); color: var(--ink); border: 1px dashed var(--kraft);
+  padding: 0.45rem 0.9rem; border-radius: 2px;
+}
+.bag small { display: block; font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.04em; color: var(--muted); font-weight: 400; }
+.verdict { border-left: 4px solid var(--kraft); background: var(--surface); padding: 1.1rem 1.25rem; display: grid; gap: 0.6rem; }
+.verdict strong { font-weight: 600; }
+.scope { font-size: 0.92rem; color: var(--muted); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding-block: 0.7rem; max-width: none; }
+.wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 3px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; vertical-align: top; padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--rule); }
+tr:last-child td { border-bottom: 0; }
+th { font-family: var(--mono); font-weight: 500; font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--surface); }
+td.claim { width: 32%; }
+.num { font-variant-numeric: tabular-nums; }
+.tag { display: inline-block; font-family: var(--mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; padding: 0.1rem 0.45rem; border: 1px solid currentColor; border-radius: 2px; white-space: nowrap; }
+.t-ok { color: var(--ok); } .t-warn { color: var(--warn); } .t-bad { color: var(--bad); } .t-muted { color: var(--muted); }
+ul.plain { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.4rem; max-width: 65ch; }
+.levels { display: grid; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.levels li { display: grid; grid-template-columns: 2.6rem 1fr; gap: 0.75rem; align-items: baseline; }
+.levels b { font-family: var(--mono); font-weight: 500; color: var(--kraft); }
+.refs { margin: 0; padding-left: 1.6rem; display: grid; gap: 0.6rem; font-size: 0.93rem; }
+.refs li { padding-left: 0.2rem; overflow-wrap: anywhere; }
+.refs .status { font-family: var(--mono); font-size: 0.74rem; color: var(--muted); display: block; }
+footer { font-size: 0.88rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 1rem; }
+@media (max-width: 520px) { td.claim { width: auto; } }
+</style>
+<style id="cite-links">
+a.cite { text-decoration: none; font-variant-numeric: tabular-nums; }
+a.cite:hover, a.cite:focus-visible { text-decoration: underline; }
+.refs li { scroll-margin-top: 1.5rem; }
+.refs li:target { background: var(--kraft-soft, #e7dcc8); outline: 2px solid var(--kraft, #8a6131); outline-offset: 4px; border-radius: 2px; }
+</style>
+
+<main>
+<header>
+  <p class="eyebrow">Fact check · prepared 2 November 2026</p>
+  <h1>Altman and Your RAM</h1>
+  <p class="lede">A claim now circulating says Sam Altman of OpenAI believes people who own computers should not have RAM, and should be limited to cloud resources that other people own and control. Is that what he believes, or what he said?</p>
+  <div class="bags" aria-label="What Altman said beside what the headlines said">
+    <span class="bag">"QUITE TERRIBLE"<small>what he said: idle DRAM held for local AI</small></span>
+    <span class="bag">"SHOULDN'T OWN COMPUTERS"<small>what one headline said he argued</small></span>
+  </div>
+</header>
+
+<section class="verdict" aria-labelledby="v">
+  <h2 id="v">Verdict</h2>
+  <p><strong>A real remark, inflated into a position he did not state.</strong> On Stripe's Cheeky Pint podcast, released 29 October 2026, Altman told John Collison that "from a global allocation perspective, actually, it's quite terrible to have everybody have a bunch of the world's limited supply of DRAM sitting in their own computer" for running AI models locally, "being used ... 5% of the time," and that "you want maximum utilization in the cloud if you're trying to deal with this very supply constrained environment" <a class="cite" href="#ref-1">[1]</a>. So the direction of the claim is real: he prefers that scarce memory for AI work sit in data centers rather than in personal machines <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-2">[2]</a><a class="cite" href="#ref-3">[3]</a>.</p>
+  <p><strong>The most serious error: "should not have RAM."</strong> He never said computer owners should have no RAM, and no working computer can run without it. His point was narrower. He said a "bunch of" extra DRAM, bought to run open-source models on your own machine, mostly sits idle <a class="cite" href="#ref-1">[1]</a>. PC Gamer's own reading is that he was "talking less about PC gamers specifically here" and more about people wanting "local inference" <a class="cite" href="#ref-2">[2]</a>. The phrase "shouldn't own computers" first appears in a Futurism headline, not in anything Altman said <a class="cite" href="#ref-4">[4]</a>.</p>
+  <p><strong>The lesser problems.</strong> "Limited only to" cloud access overstates a conditional argument about "this very supply constrained environment" <a class="cite" href="#ref-1">[1]</a>. In the same interview he said that as a consumer he is "somewhat annoyed" if he cannot "have an AI automate tasks on my own computer" <a class="cite" href="#ref-1">[1]</a>, and his company plans a consumer device of its own <a class="cite" href="#ref-8">[8]</a>. The word "believes" turns one remark about efficiency into a settled view of ownership. His earlier talk of selling intelligence "on a meter" <a class="cite" href="#ref-6">[6]</a> gives that reading some support, but it does not supply the missing words.</p>
+  <p>Weighing the hypotheses below, "he said something real about DRAM and the cloud, and the claim exaggerates it materially" is clearly favored.</p>
+</section>
+
+<p class="scope">This is a source-verified fact check, not a full Bayesian Framework for Intellectual Honesty (BFIH) analysis. Its hypothesis weights are judgements in words, not computed probabilities, and it ran no independent paradigm elicitation or adversarial challenge. Its verdict rests on what the records say, which is the question it is built to settle.</p>
+
+<section aria-labelledby="claims">
+  <h2 id="claims">Claim by claim</h2>
+  <div class="wrap">
+  <table>
+    <thead><tr><th>The account says</th><th>The record shows</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td class="claim">"Sam Altman of OpenAI"</td><td>He is introduced on the episode as "Sam Altman, CEO of OpenAI" <a class="cite" href="#ref-1">[1]</a>.</td><td><span class="tag t-ok">Accurate</span></td></tr>
+      <tr><td class="claim">He has expressed a view on RAM in individuals' computers</td><td>Yes. On Cheeky Pint (29 Oct 2026) he called it "quite terrible" from "a global allocation perspective" to have "a bunch of the world's limited supply of DRAM sitting in their own computer" <a class="cite" href="#ref-1">[1]</a>. Three outlets independently quote the same words <a class="cite" href="#ref-2">[2]</a><a class="cite" href="#ref-3">[3]</a><a class="cite" href="#ref-4">[4]</a>.</td><td><span class="tag t-ok">Accurate</span></td></tr>
+      <tr><td class="claim">"individual computer owners should not have RAM"</td><td>He did not say this. His subject was the extra DRAM people buy to run open-source models locally ("A lot of people want local inference") and how little of the time it is used ("5% of the time") <a class="cite" href="#ref-1">[1]</a>. He made no statement about the base memory every computer needs. Futurism's headline ("Argues They Shouldn't Own Computers") and Windows Central's subhead ("his aspiration to deprive you of ownership") are the outlets' framing, not quotations <a class="cite" href="#ref-4">[4]</a><a class="cite" href="#ref-5">[5]</a>.</td><td><span class="tag t-bad">False</span></td></tr>
+      <tr><td class="claim">"be limited only to access of externally owned and controlled cloud resources"</td><td>He said "you want maximum utilization in the cloud," tied to "this very supply constrained environment" <a class="cite" href="#ref-1">[1]</a>. He proposed no restriction on owners, and later in the interview he wanted an AI to work "on my own computer" <a class="cite" href="#ref-1">[1]</a>. In March 2026 he did describe a future where "people buy [intelligence] from us on a meter" <a class="cite" href="#ref-6">[6]</a>, so a cloud-first business vision is on the record. The word "only" is not.</td><td><span class="tag t-warn">Overstated</span></td></tr>
+      <tr><td class="claim">"believes" (a standing conviction)</td><td>The record holds one conversational remark about allocating memory during a shortage, plus earlier remarks favoring compute as a metered service <a class="cite" href="#ref-6">[6]</a> or a per-person allotment <a class="cite" href="#ref-9">[9]</a>. That is evidence of a cloud-leaning view, not a stated belief about who should own hardware. Nothing in the transcript addresses whether individuals should own computers or memory <a class="cite" href="#ref-1">[1]</a>.</td><td><span class="tag t-warn">Loose</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <h3>What the account leaves out</h3>
+  <ul class="plain">
+    <li>The setting: Collison asked why high memory prices had not yet called forth new supply, and Altman's remark was an example of a "super non-obvious" supply-chain effect <a class="cite" href="#ref-1">[1]</a>.</li>
+    <li>The condition he attached: "if you're trying to deal with this very supply constrained environment" <a class="cite" href="#ref-1">[1]</a>. OpenAI is itself a large buyer in that market. Its Samsung and SK hynix partnerships target "900,000 DRAM wafer starts per month" <a class="cite" href="#ref-7">[7]</a>, which is the strongest reason critics distrust the argument.</li>
+    <li>His counter-remark in the same episode about wanting AI to act "on my own computer" <a class="cite" href="#ref-1">[1]</a>, and OpenAI's plan to sell its own consumer device <a class="cite" href="#ref-8">[8]</a>.</li>
+    <li>Windows Central's headline added "Xbox, etc."; Altman named no consoles or PCs specifically, only "their own computer" <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-5">[5]</a>.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="method">
+  <h2 id="method">How I reached the verdict</h2>
+  <p>The review followed a five-step mandate: define the context, set up competing hypotheses, state a reasoning paradigm, gather evidence across levels, and weigh it.</p>
+
+  <h3>Context</h3>
+  <p>The claim concerns remarks made between May 2024 and October 2026, chiefly one podcast episode released 29 October 2026 <a class="cite" href="#ref-1">[1]</a> and its coverage on 30 October 2026 <a class="cite" href="#ref-2">[2]</a><a class="cite" href="#ref-3">[3]</a><a class="cite" href="#ref-4">[4]</a><a class="cite" href="#ref-5">[5]</a>. Its setting is a worldwide memory shortage blamed on the AI data-center build-out, a market in which OpenAI's own partnerships target 900,000 DRAM wafer starts a month <a class="cite" href="#ref-7">[7]</a>. Two terms decide the answer. "RAM" here means DRAM, which every computer needs to run at all. "Local inference" means running an AI model on hardware you own instead of through a cloud service <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-2">[2]</a>. "Believes" asks for a stated or clearly implied position, not one inferred only from business interest.</p>
+
+  <h3>Hypotheses</h3>
+  <div class="wrap">
+  <table>
+    <thead><tr><th>Hypothesis</th><th>What it predicts</th><th>Weight</th></tr></thead>
+    <tbody>
+      <tr><td><b>H1</b> The claim fairly states a view Altman has expressed</td><td>Somewhere on the record he says people should not have their own memory, or should be confined to the cloud.</td><td>Unlikely</td></tr>
+      <tr><td><b>H2</b> A real remark, materially exaggerated</td><td>A real statement favoring cloud over personal DRAM, narrower than the claim, with the stronger wording appearing first in headlines.</td><td>Clearly favored</td></tr>
+      <tr><td><b>H3</b> No such remark; the attribution is invented</td><td>No primary source with Altman discussing personal DRAM.</td><td>Ruled out</td></tr>
+      <tr><td><b>H0</b> Something else, such as satire taken literally, or a different speaker or occasion</td><td>A source behind the claim other than the Cheeky Pint remark.</td><td>Unlikely</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>These are the skill's hypotheses for an attribution, a claim about what someone said or believes, rather than an account of events. This check is the one that prompted that claim type.</p>
+
+  <h3>Paradigms</h3>
+  <p>I worked from a literal-attribution Bayesian reading: what did he say, in what context, and does the claim's wording follow from it. Two realistic opponents read the same words differently. One is a political-economy critic who judges executives by their interests and their purchases. The other is a charitable efficiency reader who treats the remark as plain capacity arithmetic.</p>
+  <div class="wrap">
+  <table>
+    <thead><tr><th>Dimension</th><th>Literal attribution (mine)</th><th>Political-economy critic</th><th>Charitable efficiency reader</th></tr></thead>
+    <tbody>
+      <tr><td>Ontology</td><td>Spoken words and documented actions are the facts at issue</td><td>Interests and market power are the real causes behind words</td><td>Physical capacity and utilization rates are what really matter</td></tr>
+      <tr><td>Epistemology</td><td>Primary transcript outranks paraphrase; beliefs need stated or implied support</td><td>Revealed preference: purchases and business models expose true beliefs</td><td>Engineering arithmetic settles it; intent is beside the point</td></tr>
+      <tr><td>Axiology</td><td>Accuracy to the speaker first, then fairness to readers</td><td>Protect user ownership and autonomy against concentration</td><td>Maximize total useful compute from scarce supply</td></tr>
+      <tr><td>Methodology</td><td>Quote in context; trace each phrase to its first appearance</td><td>Read statements against incentives and the pattern of conduct</td><td>Model utilization; judge the claim by whether the numbers work</td></tr>
+      <tr><td>Sociology</td><td>Trust the primary record over outlets on any side</td><td>Distrust incumbent executives; trust independent critics and users</td><td>Trust operators and engineers who run the systems</td></tr>
+      <tr><td>Temporality</td><td>Judge this remark in its moment, against his record</td><td>Long horizon: this is one step in a drift toward rented computing</td><td>Short horizon: a shortage-era argument that lapses when supply recovers</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>The critic has a real point. Altman's preference for cloud over local memory is clear <a class="cite" href="#ref-1">[1]</a>. He has described intelligence sold "on a meter" <a class="cite" href="#ref-6">[6]</a>. His company buys memory at a scale that tightens the market he is describing <a class="cite" href="#ref-7">[7]</a>. All of that makes "he would prefer you rent" a fair inference about his direction. It does not supply the words "should not have RAM" or "only," which no source shows him saying, and it has to set aside his remark about wanting AI on his own computer <a class="cite" href="#ref-1">[1]</a>. The efficiency reader is right that memory used 5% of the time is poorly used. That view fails to engage with the fact that the speaker gains from the conclusion, and it does not show that the 5% figure was measured; Altman gave it without a source <a class="cite" href="#ref-1">[1]</a>.</p>
+
+  <h3>Evidence levels</h3>
+  <ul class="levels">
+    <li><b>L1</b><span>How to read attributions: a stated belief needs words or a clear implication, while incentives raise or lower the prior but do not substitute for words.</span></li>
+    <li><b>L2</b><span>The proposition: what Altman holds about whether individuals should own memory and compute, or rent it from the cloud.</span></li>
+    <li><b>L3</b><span>His pattern over time: universal basic compute (2024) <a class="cite" href="#ref-9">[9]</a>, intelligence as a metered utility (March 2026) <a class="cite" href="#ref-6">[6]</a>, OpenAI's memory buying <a class="cite" href="#ref-7">[7]</a> and its device plan <a class="cite" href="#ref-8">[8]</a>.</span></li>
+    <li><b>L4</b><span>How the remark traveled: the 30 October coverage and its headlines <a class="cite" href="#ref-2">[2]</a><a class="cite" href="#ref-3">[3]</a><a class="cite" href="#ref-4">[4]</a><a class="cite" href="#ref-5">[5]</a>.</span></li>
+    <li><b>L5</b><span>The words spoken: the Cheeky Pint transcript published by the show itself <a class="cite" href="#ref-1">[1]</a>.</span></li>
+  </ul>
+  <p>Downward, if L2 were the strong claim, L3 should show him saying so repeatedly; it shows a cloud-leaning business vision and a stated wish for local agents, but nothing about owners going without memory. Upward, L3 bears on L2 because a stable belief leaves a trail of statements. From L4 to L5: if the headlines were faithful, the transcript would contain their stronger words. It does not, and that is why the claim's specific wording traces to the coverage. The hypotheses predict L5 most directly, and L5 coverage is strong: I read the full transcript. L3 is adequate but rests partly on secondary reports <a class="cite" href="#ref-6">[6]</a><a class="cite" href="#ref-9">[9]</a>. The thinnest point is that I did not watch the video to confirm the published transcript, and I found no follow-up statement from Altman either way.</p>
+
+  <h3>Weighing it</h3>
+  <ul class="plain">
+    <li><b>H2 is most likely.</b> The core remark is confirmed in the primary transcript and quoted identically by independent outlets <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-2">[2]</a><a class="cite" href="#ref-3">[3]</a><a class="cite" href="#ref-4">[4]</a>. The claim's two strongest elements ("should not have RAM", "limited only to") have no source in his words and do appear in headline framing <a class="cite" href="#ref-4">[4]</a><a class="cite" href="#ref-5">[5]</a>.</li>
+    <li><b>H1 is unlikely.</b> The critic's inference from his metered-utility vision and OpenAI's purchasing <a class="cite" href="#ref-6">[6]</a><a class="cite" href="#ref-7">[7]</a> keeps it from being ruled out. A literal "no RAM" reading is physically incoherent, and his own-computer remark <a class="cite" href="#ref-1">[1]</a> cuts against "only cloud."</li>
+    <li><b>H3 is ruled out.</b> The show's own transcript carries the words <a class="cite" href="#ref-1">[1]</a>. The only remaining doubt is that I did not check the published transcript against the audio.</li>
+    <li><b>H0 is unlikely.</b> I found no other occasion on which he said something stronger, but my search was bounded at about 25 queries, and an unlocated remark cannot be ruled out.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="refs">
+  <h2 id="refs">Sources</h2>
+  <p>Every source below was opened and read; no citation field comes from a search summary. WebFetch returned truncated or capped text for the transcript, PC Gamer, Futurism, Windows Central and Axios (403), so I read those through a direct text fetch with keyword context. A Tom's Hardware piece on the memory deals returned only its headline and was replaced by OpenAI's own announcement <a class="cite" href="#ref-7">[7]</a>. Its widely repeated "40% of global DRAM output" figure is not used here. Wording differs slightly between copies: the transcript reads "everybody" <a class="cite" href="#ref-1">[1]</a>, PC Gamer "everyone" <a class="cite" href="#ref-2">[2]</a>, and Futurism inserts "[dynamic RAM]" and drops "supply" from "very supply constrained" <a class="cite" href="#ref-4">[4]</a>. The transcript is followed throughout.</p>
+  <ol class="refs">
+    <li id="ref-1">Cheeky Pint. (2026, October 29). <i>Why Sam Altman is against a single superintelligence</i> [Podcast episode transcript]. Cheeky Pint. <a href="https://cheekypint.substack.com/p/why-sam-altman-is-against-a-single">https://cheekypint.substack.com/p/why-sam-altman-is-against-a-single</a><span class="status">Full transcript read (direct text fetch); DRAM exchange and own-computer passage read in full context. Video not watched.</span></li>
+    <li id="ref-2">Kinghorn, J. (2026, October 30). Sam Altman argues that it's bad you want DRAM in your computer and not a data center, actually. <i>PC Gamer</i>. <a href="https://www.pcgamer.com/software/ai/sam-altman-argues-that-its-bad-you-want-dram-in-your-computer-and-not-a-data-center-actually/">https://www.pcgamer.com/software/ai/sam-altman-argues-that-its-bad-you-want-dram-in-your-computer-and-not-a-data-center-actually/</a><span class="status">Article text read via direct fetch after WebFetch returned only the headline.</span></li>
+    <li id="ref-3">Sozinov, A. (2026, October 30). "Quite terrible": Sam Altman says PCs waste the world's limited DRAM supply. <i>Notebookcheck</i>. <a href="https://www.notebookcheck.net/Quite-terrible-Sam-Altman-says-PCs-waste-the-world-s-limited-DRAM-supply.1438393.0.html">https://www.notebookcheck.net/Quite-terrible-Sam-Altman-says-PCs-waste-the-world-s-limited-DRAM-supply.1438393.0.html</a><span class="status">Full page read (WebFetch).</span></li>
+    <li id="ref-4">Tangermann, V. (2026, October 30). Sam Altman absolutely hates the idea of people running their own AI models at home, argues they shouldn't own computers. <i>Futurism</i>. <a href="https://futurism.com/artificial-intelligence/sam-altman-hates-local-ai-models-computers">https://futurism.com/artificial-intelligence/sam-altman-hates-local-ai-models-computers</a><span class="status">Full page read (WebFetch, then direct fetch to confirm headline wording).</span></li>
+    <li id="ref-5">Corden, J. (2026, October 30). You don't hate him enough — OpenAI sociopath Sam Altman says it's "terrible" that your PC, Xbox, etc. have RAM that could be used for AI. <i>Windows Central</i>. <a href="https://www.windowscentral.com/artificial-intelligence/you-dont-hate-him-enough-openai-sociopath-sam-altman-says-its-terrible-that-your-pc-xbox-etc-have-ram-that-could-be-used-for-ai">https://www.windowscentral.com/artificial-intelligence/you-dont-hate-him-enough-openai-sociopath-sam-altman-says-its-terrible-that-your-pc-xbox-etc-have-ram-that-could-be-used-for-ai</a><span class="status">Headline, byline, subhead and keyword passages read via direct fetch; not read end to end.</span></li>
+    <li id="ref-6">Spirlet, T. (2026, March 13). Sam Altman says AI will eventually be sold like electricity and water — by companies like OpenAI. <i>Business Insider</i> (via AOL). <a href="https://www.aol.com/news/sam-altman-says-ai-eventually-152157395.html">https://www.aol.com/news/sam-altman-says-ai-eventually-152157395.html</a><span class="status">Full page read (WebFetch). Secondary report of a BlackRock Infrastructure Summit remark; the summit recording was not checked.</span></li>
+    <li id="ref-7">OpenAI. (2025, October 1). <i>Samsung and SK join OpenAI's Stargate initiative to advance global AI infrastructure</i>. <a href="https://openai.com/index/samsung-and-sk-join-stargate/">https://openai.com/index/samsung-and-sk-join-stargate/</a><span class="status">Full page read via direct fetch. Replaces a Tom's Hardware report whose body could not be read.</span></li>
+    <li id="ref-8">Fried, I., &amp; Lawler, D. (2026, January 19). Exclusive: OpenAI aims to debut first device in 2026. <i>Axios</i>. <a href="https://www.axios.com/2026/01/19/openai-device-2026-lehane-jony-ive">https://www.axios.com/2026/01/19/openai-device-2026-lehane-jony-ive</a><span class="status">WebFetch returned 403; page read via direct fetch. Whether the device has launched was not checked.</span></li>
+    <li id="ref-9">Greene, T. (2024, May 12). Sam Altman thinks giving everyone 'a slice of GPT' could pay for UBI. <i>Cointelegraph</i>. <a href="https://cointelegraph.com/news/sam-altman-slice-gpt-pay-ubi-artificial-intelligence">https://cointelegraph.com/news/sam-altman-slice-gpt-pay-ubi-artificial-intelligence</a><span class="status">Page read via direct fetch. Secondary report of the All-In podcast; the episode itself was not checked.</span></li>
+  </ol>
+</section>
+
+<footer>
+  <p>Residual uncertainty: the transcript is the show's own and was not checked against the video; Altman's 5% utilization figure is his assertion with no source given; the metered-utility <a class="cite" href="#ref-6">[6]</a> and universal-basic-compute <a class="cite" href="#ref-9">[9]</a> remarks rest on secondary reports; the "40% of global DRAM" share and the status of OpenAI's device are unverified and given no weight. I found no statement by Altman after 30 October 2026 clarifying or extending the remark.</p>
+</footer>
+</main>

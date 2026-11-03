@@ -37,6 +37,14 @@ Ask in your own words, for example "did this really happen?" with the text paste
 
 A thorough check takes a few minutes and a few dozen searches and page reads.
 
+## Examples
+
+[`examples/`](examples/) holds three reports the skill produced, one per kind of claim. Clone the repository and open `examples/index.html` in a browser to browse them.
+
+- [The 1973 PBB Mix-Up](examples/pbb-1973-feed-contamination.html): an event account. True in substance, with an invented cause and some loose figures. ([published version](https://claude.ai/artifact/9mWysBde6H1qBabVmapCmU))
+- [Altman and Your RAM](examples/altman-ram-remark.html): an attribution. A real remark, materially exaggerated. ([published version](https://claude.ai/artifact/DguRVdk2f6TgxRSvAS9b5j))
+- [ICE Instant Re-arrests](examples/ice-immediate-rearrests.html): a practice with a legal label. The conduct is established, and the legal question is referred to a full analysis.
+
 ## Requirements
 
 - Claude Code with web search and web fetch available.
@@ -59,7 +67,9 @@ plugins/fact-check/
     references/page-template.html        the shareable page
     scripts/fetch_text.py                reads a source's own text, HTML or PDF
     scripts/link_citations.py            links every [n] to its source entry
+examples/                                example reports and an index page
 tests/test_scripts.py                    offline tests for both scripts
+tests/test_examples.py                   checks on the example reports
 ```
 
 ## Development

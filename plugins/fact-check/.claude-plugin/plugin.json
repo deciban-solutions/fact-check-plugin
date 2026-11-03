@@ -1,7 +1,7 @@
 {
   "name": "fact-check",
   "displayName": "Fact Check",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Checks a pasted claim, quote, statistic or account against the documentary record: reads every cited source in full, weighs competing hypotheses in words, refers contested interpretation to a deeper analysis, and produces a shareable cited page.",
   "author": {
     "name": "Deciban Solutions LLC",

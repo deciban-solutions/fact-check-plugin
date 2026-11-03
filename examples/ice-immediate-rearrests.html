@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ICE Instant Re-arrests</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@600;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column, set like a lab report. Evidence tags and the stenciled label strip are the only ornament. */
+:root {
+  --bg: #f6f6f3;
+  --surface: #ecebe5;
+  --fg: #1f2329;
+  --muted: #5a5f66;
+  --rule: #cfccc2;
+  --kraft: #8a6131;
+  --kraft-soft: #e7dcc8;
+  --ink: #23466e;
+  --ok: #2f6b45;
+  --warn: #8a5a00;
+  --bad: #a3322a;
+  --display: "Big Shoulders Stencil Display", "Arial Narrow", Impact, sans-serif;
+  --body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #16181b; --surface: #1f2226; --fg: #e6e4de; --muted: #a3a6ab; --rule: #3a3d42;
+    --kraft: #d1a46a; --kraft-soft: #33291c; --ink: #8fb4e0; --ok: #7cc196; --warn: #e2b155; --bad: #f08a80;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #16181b; --surface: #1f2226; --fg: #e6e4de; --muted: #a3a6ab; --rule: #3a3d42;
+  --kraft: #d1a46a; --kraft-soft: #33291c; --ink: #8fb4e0; --ok: #7cc196; --warn: #e2b155; --bad: #f08a80;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--body); font-size: 1.0625rem; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 2.5rem 4rem;
+}
+main { max-width: 46rem; margin: 0 auto; display: grid; gap: 2.75rem; }
+section { display: grid; gap: 1rem; min-width: 0; }
+h1, h2 { font-family: var(--display); font-weight: 800; letter-spacing: 0.02em; text-wrap: balance; line-height: 1.05; margin: 0; }
+h1 { font-size: clamp(2.4rem, 7vw, 3.6rem); }
+h2 { font-size: 1.85rem; color: var(--kraft); }
+h3 { font-size: 1.1rem; margin: 0.5rem 0 0; }
+p { margin: 0; max-width: 65ch; }
+a { color: var(--ink); text-underline-offset: 2px; }
+a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.eyebrow { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+header { display: grid; gap: 1rem; }
+.lede { font-size: 1.2rem; }
+.bags { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.bag {
+  font-family: var(--display); font-weight: 600; font-size: 1.15rem; letter-spacing: 0.12em;
+  background: var(--kraft-soft); color: var(--ink); border: 1px dashed var(--kraft);
+  padding: 0.45rem 0.9rem; border-radius: 2px;
+}
+.bag small { display: block; font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.04em; color: var(--muted); font-weight: 400; }
+.verdict { border-left: 4px solid var(--kraft); background: var(--surface); padding: 1.1rem 1.25rem; display: grid; gap: 0.6rem; }
+.verdict strong { font-weight: 600; }
+.scope { font-size: 0.92rem; color: var(--muted); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding-block: 0.7rem; max-width: none; }
+.wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 3px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; vertical-align: top; padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--rule); }
+tr:last-child td { border-bottom: 0; }
+th { font-family: var(--mono); font-weight: 500; font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--surface); }
+td.claim { width: 32%; }
+.num { font-variant-numeric: tabular-nums; }
+.tag { display: inline-block; font-family: var(--mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; padding: 0.1rem 0.45rem; border: 1px solid currentColor; border-radius: 2px; white-space: nowrap; }
+.t-ok { color: var(--ok); } .t-warn { color: var(--warn); } .t-bad { color: var(--bad); } .t-muted { color: var(--muted); }
+ul.plain { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.4rem; max-width: 65ch; }
+.levels { display: grid; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.levels li { display: grid; grid-template-columns: 2.6rem 1fr; gap: 0.75rem; align-items: baseline; }
+.levels b { font-family: var(--mono); font-weight: 500; color: var(--kraft); }
+.refs { margin: 0; padding-left: 1.6rem; display: grid; gap: 0.6rem; font-size: 0.93rem; }
+.refs li { padding-left: 0.2rem; overflow-wrap: anywhere; }
+.refs .status { font-family: var(--mono); font-size: 0.74rem; color: var(--muted); display: block; }
+footer { font-size: 0.88rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 1rem; }
+@media (max-width: 520px) { td.claim { width: auto; } }
+</style>
+<style id="cite-links">
+a.cite { text-decoration: none; font-variant-numeric: tabular-nums; }
+a.cite:hover, a.cite:focus-visible { text-decoration: underline; }
+.refs li { scroll-margin-top: 1.5rem; }
+.refs li:target { background: var(--kraft-soft, #e7dcc8); outline: 2px solid var(--kraft, #8a6131); outline-offset: 4px; border-radius: 2px; }
+</style>
+
+<main>
+<header>
+  <p class="eyebrow">Fact check · prepared 2 November 2026</p>
+  <h1>ICE Instant Re-arrests</h1>
+  <p class="lede">The claim: "ICE is unlawfully reimprisoning immigrants immediately after their court-ordered release." Is ICE doing this, and have courts found it unlawful?</p>
+  <div class="bags" aria-label="Two moments from one Minnesota case, 2 October 2026">
+    <span class="bag">RELEASED<small>release papers signed, property returned</small></span>
+    <span class="bag">RE-ARRESTED<small>"not even 15 minutes later"</small></span>
+  </div>
+</header>
+
+<section class="verdict" aria-labelledby="v">
+  <h2 id="v">Verdict</h2>
+  <p><strong>The conduct is real and documented in Minnesota. Whether it is unlawful is not yet settled.</strong> Since at least September 2026, ICE agents at the Whipple Federal Building near Minneapolis have re-arrested people within minutes of releasing them under federal habeas orders. One man was re-arrested before he reached the door; another a few steps outside it <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-2">[2]</a><a class="cite" href="#ref-3">[3]</a>. An ICE official told one immigrant's lawyer, "we've been doing this since May," and said ICE lawyers pick "good candidates for re-arrest" <a class="cite" href="#ref-1">[1]</a>. Every judge reported to have ruled on one of these re-arrests found that it violated the release order: Judge Jeffrey Bryan twice and Judge Jerry Blackwell once <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-3">[3]</a>.</p>
+  <p><strong>The weakest word is "unlawfully," stated as a settled rule.</strong> No appeals court has said what "release" means in these habeas cases. Chief Judge Eric Tostrud has two such cases pending and has written only that a re-arrest "perhaps" violated his order. DHS says ICE "may seek to rearrest the alien in a way that complies with the judicial decision" <a class="cite" href="#ref-3">[3]</a>. Some releases were ordered because the first arrest lacked a valid warrant. One petitioner's own lawyer said there was "no reason to think" the man "couldn't be apprehended once a legally valid warrant was obtained" <a class="cite" href="#ref-2">[2]</a>.</p>
+  <p><strong>Lesser problems.</strong> "Immigrants" in general overstates the scope. MPR News had confirmed seven such cases by late October <a class="cite" href="#ref-3">[3]</a>. Two earlier immediate re-arrests in February 2026 were also in Minnesota <a class="cite" href="#ref-4">[4]</a>. This check found no documented instant re-arrests elsewhere; a separate California ruling concerns a different practice, re-arresting people released long before <a class="cite" href="#ref-6">[6]</a>.</p>
+  <p>This check settles the conduct: immediate re-arrests after court-ordered release are clearly established in Minnesota, and the claim's unqualified "immigrants" overstates their reach. It does not settle whether they are unlawful. That turns on what "release" means in a habeas order, which no appeals court has decided, and it needs a full analysis (see the note below).</p>
+</section>
+
+<p class="scope">This is a source-verified fact check, not a full Bayesian Framework for Intellectual Honesty (BFIH) analysis. Its hypothesis weights are judgements in words, not computed probabilities, and it ran no independent paradigm elicitation or adversarial challenge. Whether ICE's immediate re-arrests after habeas release are unlawful turns on contested interpretation, so it is referred to a full BFIH analysis.</p>
+
+<section aria-labelledby="claims">
+  <h2 id="claims">Claim by claim</h2>
+  <div class="wrap">
+  <table>
+    <thead><tr><th>The account says</th><th>The record shows</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td class="claim">"ICE"</td><td>ICE agents made the arrests. An attorney in ICE's Office of the Principal Legal Advisor said she advised its enforcement division that one man "could be re-arrested" <a class="cite" href="#ref-1">[1]</a>. The Department of Homeland Security (DHS) defends the practice <a class="cite" href="#ref-3">[3]</a>.</td><td><span class="tag t-ok">Accurate</span></td></tr>
+      <tr><td class="claim">"is … reimprisoning" (an ongoing practice, not a one-off)</td><td>Re-arrests on 9, 22 and 25 September and on 1, 2 and 19 October 2026 <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-2">[2]</a><a class="cite" href="#ref-3">[3]</a>; seven cases confirmed by MPR News <a class="cite" href="#ref-3">[3]</a>. An ICE official called it "not new; we've been doing this since May," as the lawyer recounted to MPR <a class="cite" href="#ref-1">[1]</a>. That account is secondhand, and ICE did not answer MPR's questions <a class="cite" href="#ref-1">[1]</a>.</td><td><span class="tag t-ok">Accurate</span></td></tr>
+      <tr><td class="claim">"immigrants" (unqualified)</td><td>All of the documented cases are in the District of Minnesota, at the Whipple Federal Building <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-3">[3]</a><a class="cite" href="#ref-4">[4]</a>. ICE says it selects candidates, "usually people who were arrested without warrants or probable cause in the first place" <a class="cite" href="#ref-3">[3]</a>. It is not done to everyone released.</td><td><span class="tag t-warn">Loose</span></td></tr>
+      <tr><td class="claim">"immediately after"</td><td>Within minutes: one man was "released" for three minutes, by the government's own status report <a class="cite" href="#ref-1">[1]</a>. Another did not "get a foot outside" <a class="cite" href="#ref-3">[3]</a>. A third "didn't even make it to see the sun" <a class="cite" href="#ref-2">[2]</a>. Two men in February "never left the courthouse" <a class="cite" href="#ref-4">[4]</a>.</td><td><span class="tag t-ok">Accurate</span></td></tr>
+      <tr><td class="claim">"their court-ordered release"</td><td>The releases were ordered by federal district judges granting habeas petitions <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-2">[2]</a><a class="cite" href="#ref-3">[3]</a>. In the February case, a judge had released two men under court-ordered conditions <a class="cite" href="#ref-4">[4]</a>.</td><td><span class="tag t-ok">Accurate</span></td></tr>
+      <tr><td class="claim">"unlawfully"</td><td>Bryan found a re-arrest "violat[ed]" his order and wrote that calling such a re-arrest lawful "would render habeas relief meaningless" <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-3">[3]</a>. Blackwell rejected ICE's reading that his order allowed re-arrest, found the government had not followed it, and ordered a showing of why it should not be held in contempt for missing the order's 48-hour release update <a class="cite" href="#ref-1">[1]</a>. Against that: there is no appellate ruling, Tostrud has two cases undecided, and DHS says the re-arrests comply <a class="cite" href="#ref-3">[3]</a>. These orders were read only through MPR's coverage.</td><td><span class="tag t-muted">Referred</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <h3>What the account leaves out</h3>
+  <ul class="plain">
+    <li>Why these people were released matters. Many habeas grants rested on a warrantless or unsupported first arrest <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-2">[2]</a>. Whether ICE may simply re-arrest them with a proper warrant is the open legal question. The claim treats it as answered <a class="cite" href="#ref-2">[2]</a><a class="cite" href="#ref-3">[3]</a>.</li>
+    <li>The re-arrests follow a wider fight over detention without bond hearings. The Eighth Circuit sided with the administration in March 2026, which made habeas harder to win in Minnesota, and the Supreme Court has agreed to take up the issue <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-2">[2]</a>. A commentator sympathetic to ICE argues that Minnesota judges are defying that appellate ruling <a class="cite" href="#ref-8">[8]</a>.</li>
+    <li>Instant re-arrest is one strand of a broader record of non-compliance with habeas orders. Lawfare counted 300 immigration habeas cases with violated court orders, 110 of them failures to release on time, nearly two thirds in Minnesota <a class="cite" href="#ref-5">[5]</a>. Other re-arrests happened months after release and are a different practice <a class="cite" href="#ref-6">[6]</a><a class="cite" href="#ref-7">[7]</a>.</li>
+    <li>Some re-arrests were reversed fast. Bryan's order turned Saltos's transport van around en route to jail <a class="cite" href="#ref-3">[3]</a>, and Cortez was released again after Blackwell's order <a class="cite" href="#ref-1">[1]</a>.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="method">
+  <h2 id="method">How I reached the verdict</h2>
+  <p>The review followed a five-step mandate: define the context, set up competing hypotheses, state a reasoning paradigm, gather evidence across levels, and weigh it.</p>
+
+  <h3>Context</h3>
+  <p>Time: May–October 2026, with the documented cases from September and October and two earlier in February <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-3">[3]</a><a class="cite" href="#ref-4">[4]</a>. Place: the District of Minnesota, where detainees held in county jails are processed for release at the Bishop Henry Whipple Federal Building at Fort Snelling <a class="cite" href="#ref-2">[2]</a>. Actors: ICE's Enforcement and Removal Operations division and its legal office, federal district judges, habeas petitioners and their lawyers <a class="cite" href="#ref-1">[1]</a>. Terms: "court-ordered release" here means a federal judge's grant of habeas corpus ordering release from ICE custody. It does not mean a criminal court's release followed by ICE pickup on a detainer, which is a different and long-standing practice. "Unlawfully" can mean either a violation of the release order (contempt) or an arrest without legal authority. Courts have so far addressed the first <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-3">[3]</a>.</p>
+
+  <h3>Hypotheses</h3>
+  <div class="wrap">
+  <table>
+    <thead><tr><th>Hypothesis</th><th>What it predicts</th><th>Weight</th></tr></thead>
+    <tbody>
+      <tr><td><b>H1</b> Accurate as stated: an ICE practice of immediate re-arrest, unlawful</td><td>Repeated cases; ICE acknowledges a practice; courts that rule find violations; no credible lawful authority</td><td>Unlikely on scope; legality referred</td></tr>
+      <tr><td><b>H2</b> Core true, overstated: the practice is real and ruled unlawful where tested, but narrower in scope or less settled in law than claimed</td><td>As H1, but confined to some places or selected people, and legality still contested at the appellate level</td><td>Favored on scope; legality referred</td></tr>
+      <tr><td><b>H3</b> Re-arrests real but lawful: release was honoured, and the re-arrest rests on new, valid authority</td><td>Courts decline to find violations; re-arrests follow new warrants; no contempt findings</td><td>Open; legality referred</td></tr>
+      <tr><td><b>H4</b> No such practice: isolated mix-ups or invented stories</td><td>No court records; ICE denies the practice; cases are later re-arrests</td><td>Ruled out</td></tr>
+      <tr><td><b>H0</b> Other: for example, the releases were not court-ordered, or the people were not immigrants in ICE custody</td><td>Records show a different kind of release</td><td>Ruled out</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>These are the skill's hypotheses for a practice with a label: an ongoing pattern of conduct carrying a legal characterization. This check is the one that prompted that claim type. The event-account set it started from had a single "core true, detail wrong" outcome, which had to be split in two. A real practice can be overstated (H2) or lawful (H3), and those are different findings.</p>
+
+  <h3>Paradigms</h3>
+  <p>I reason from court records and contemporaneous reporting, weighing judges' written findings above any party's characterization. Two realistic opposing paradigms read the same events differently: one deferring to executive enforcement, one taking the advocates' view.</p>
+  <div class="wrap">
+  <table>
+    <thead><tr><th>Dimension</th><th>Court-record empiricism (mine)</th><th>Enforcement deference</th><th>Immigrant-rights advocacy</th></tr></thead>
+    <tbody>
+      <tr><td>Ontology</td><td>Discrete arrests and orders are real; "practice" must be shown by repetition</td><td>Removable aliens' status is the fact; each arrest stands alone</td><td>A system of detention is real; cases are instances of it</td></tr>
+      <tr><td>Epistemology</td><td>Written rulings and records outrank testimony; hearsay is flagged</td><td>Agency statements and appellate law define what is known</td><td>Lived testimony and lawyers' accounts are primary knowledge</td></tr>
+      <tr><td>Axiology</td><td>Accuracy about scope and legality matters over either side's cause</td><td>Enforcing immigration law and removal outweighs procedural friction</td><td>Liberty and family integrity outweigh enforcement goals</td></tr>
+      <tr><td>Methodology</td><td>Count cases, read orders, test claimed generality against coverage</td><td>Read statutes plainly; district rulings yield to appellate holdings</td><td>Document individual harms; a pattern can be inferred from few cases</td></tr>
+      <tr><td>Sociology</td><td>Trust judges' findings, check journalists, discount partisans of both sides</td><td>Trust DHS and appellate courts; distrust activist district judges</td><td>Trust immigration lawyers and affected communities; distrust DHS</td></tr>
+      <tr><td>Temporality</td><td>Judge as of now; legality may change when appeals rule</td><td>The legal question will be settled upward; wait for it</td><td>Harm is immediate; each night in custody counts now</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Enforcement deference has a real point. "Release" has no appellate definition, and a release order does not by itself bar a later lawful arrest; DHS says so <a class="cite" href="#ref-3">[3]</a>, and a petitioner's own lawyer conceded a valid-warrant arrest was possible <a class="cite" href="#ref-2">[2]</a>. It fails on these facts: re-arrests staged inside the building within minutes, and a warrant waved "for at most three seconds" <a class="cite" href="#ref-1">[1]</a>, are hard to call compliance, and the two judges who ruled said so <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-3">[3]</a>. The advocacy view is right that ICE described a routine <a class="cite" href="#ref-1">[1]</a>. It overreaches when "seven confirmed cases in one district" becomes "immigrants" everywhere <a class="cite" href="#ref-3">[3]</a>.</p>
+
+  <h3>Evidence levels</h3>
+  <ul class="levels">
+    <li><b>L1</b><span>Governing law: what habeas "release" requires, and ICE's arrest and detention authority. If the law lets ICE re-arrest on fresh authority, judges should accept well-founded re-arrests at L4.</span></li>
+    <li><b>L2</b><span>The proposition: ICE has a practice of immediate re-arrest after court-ordered release, and it is unlawful. If true, repeated cases and an acknowledged policy should appear at L3.</span></li>
+    <li><b>L3</b><span>Pattern: case counts, places, and ICE's own description of the practice <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-3">[3]</a><a class="cite" href="#ref-5">[5]</a>.</span></li>
+    <li><b>L4</b><span>Rulings in specific cases: orders finding, or declining to find, that a re-arrest violated release <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-3">[3]</a>.</span></li>
+    <li><b>L5</b><span>Named people and acts: Cortez, Saltos, Ivan, Alejandro, Ajorna and Sosa-Celis <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-2">[2]</a><a class="cite" href="#ref-3">[3]</a><a class="cite" href="#ref-4">[4]</a>.</span></li>
+  </ul>
+  <p>Each link runs both ways: L5 arrests matter at L4 because the release order defines what counts as release, and L4 rulings matter at L3 because a run of findings is what makes a practice unlawful rather than one officer's mistake. The hypotheses predict L4 most directly (legality) and L3 (scope). Coverage: L5 strong; L3 adequate for Minnesota, sparse elsewhere; L4 sparse, because every order was read through MPR's reporting, not opened; L1 sparse, with no statute or appellate opinion read. L4 is the thinnest point and the one the "unlawfully" row rests on.</p>
+
+  <h3>Weighing it</h3>
+  <ul class="plain">
+    <li><b>H4 is nearly ruled out.</b> Government filings confirm at least one release lasted three minutes <a class="cite" href="#ref-1">[1]</a>, and judges issued orders on the re-arrests <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-3">[3]</a>.</li>
+    <li><b>H3 has some force but loses on the record.</b> DHS's position and the open question of what counts as "release" keep it alive <a class="cite" href="#ref-3">[3]</a>. But every ruling reported so far went the other way, and Blackwell rejected ICE's reading that his order allowed re-arrest <a class="cite" href="#ref-1">[1]</a>. It stays open because Tostrud's pending cases or an appeal could change the picture, and that question is referred.</li>
+    <li><b>H1 versus H2 turns on scope and settledness.</b> ICE's "since May" remark and its "legal team" picking candidates point to a policy, not accidents <a class="cite" href="#ref-1">[1]</a>. Yet the documented cases are confined to one district and number seven <a class="cite" href="#ref-3">[3]</a>, and the claim states unlawfulness as settled when it is decided only case by case at the district level <a class="cite" href="#ref-3">[3]</a>. On scope, that favors H2 over H1. On legality, the question is referred.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="refs">
+  <h2 id="refs">Sources</h2>
+  <p>Each source below was downloaded and read in its own text with a script, not through a summarizing tool. Davis Vanguard's report of a Pennsylvania contempt ruling was blocked by a bot wall, and the Internet Archive refused the request, so it is listed unverified and given no weight. A Reuters count of rulings against ICE detention (via Minnesota Lawyer) was also blocked and is not cited. No court order was opened directly: Judge Bryan's and Judge Blackwell's words are quoted as MPR News reported them.</p>
+  <ol class="refs">
+    <li id="ref-1">Kelley, C., &amp; Medina, R. (2026, October 13). <i>'We've been doing this since May': ICE admits instant re-arrest strategy</i>. MPR News. <a href="https://mprnews.org/story/2026/10/13/ice-admits-instant-rearrest-strategy">https://mprnews.org/story/2026/10/13/ice-admits-instant-rearrest-strategy</a><span class="status">Full page read. The ICE quotations are the lawyer's account of what officials told her.</span></li>
+    <li id="ref-2">Kelley, C. (2026, October 5). <i>Catch, release, catch: Inside ICE's new 'farce' tactic</i>. MPR News. <a href="https://mprnews.org/story/2026/10/05/catch-release-catch-new-ice-farce-tactic">https://mprnews.org/story/2026/10/05/catch-release-catch-new-ice-farce-tactic</a><span class="status">Full page read.</span></li>
+    <li id="ref-3">Kelley, C. (2026, October 28). <i>Judge threatens ICE with contempt, sanctions in Minnesota re-arrest case</i>. MPR News. <a href="https://mprnews.org/story/2026/10/27/minnesota-immigration-rearrest-case-judge-threatens-ice-with-contempt-sanctions">https://mprnews.org/story/2026/10/27/minnesota-immigration-rearrest-case-judge-threatens-ice-with-contempt-sanctions</a><span class="status">Full page read. The page metadata gives 28 October, the URL 27 October.</span></li>
+    <li id="ref-4">Dorgan, M. (2026, February 4). <i>ICE re-arrests two Venezuelan men after federal judge's release order</i>. Fox News. <a href="https://www.foxnews.com/politics/ice-re-arrests-two-venezuelan-men-after-federal-judges-release-order.print">https://www.foxnews.com/politics/ice-re-arrests-two-venezuelan-men-after-federal-judges-release-order.print</a><span class="status">Full print page read. It relays the Minnesota Star Tribune's reporting, which was not opened.</span></li>
+    <li id="ref-5">Pompilio, K., &amp; Wittes, B. (2026, April 3). <i>Three hundred habeas cases in which the government has defied court orders</i>. Lawfare. <a href="https://www.lawfaremedia.org/article/three-hundred-habeas-cases-in-which-the-government-has-defied-court-orders">https://www.lawfaremedia.org/article/three-hundred-habeas-cases-in-which-the-government-has-defied-court-orders</a><span class="status">Read for the counts, the methodology note and the opening cases; the linked tracker was not opened.</span></li>
+    <li id="ref-6">Keker, Van Nest &amp; Peters LLP. (2025, December 22). <i>Federal court blocks unlawful ICE policy of re-arresting immigrants without legal justification</i>. <a href="https://www.keker.com/news/news-items/federal-court-blocks-unlawful-ice-policy-of-re-arresting-immigrants-without-legal-justification">https://www.keker.com/news/news-items/federal-court-blocks-unlawful-ice-policy-of-re-arresting-immigrants-without-legal-justification</a><span class="status">Full page read. A press release from plaintiffs' counsel; the 67-page ruling in Garro Pinchi v. Noem was not opened.</span></li>
+    <li id="ref-7">Blume, P. (2026, March 24). <i>ICE unlawfully arrested a college student… again</i>. FOX 9 Minneapolis-St. Paul. <a href="https://www.fox9.com/news/ice-unlawfully-arrested-mohammed-hoque">https://www.fox9.com/news/ice-unlawfully-arrested-mohammed-hoque</a><span class="status">Read as far as the government's admission and the agent's explanation.</span></li>
+    <li id="ref-8">Glahn, B. (2026, July 19). <i>The habeas defiance</i>. Power Line. <a href="https://www.powerlineblog.com/archives/2026/07/the-habeas-definance.php">https://www.powerlineblog.com/archives/2026/07/the-habeas-definance.php</a><span class="status">Full post read. Opinion, cited for the opposing paradigm only.</span></li>
+    <li id="ref-9">[unknown]. (2026, October). <i>Federal judge holds immigration officials in civil contempt over rearrest following court-ordered release</i>. Davis Vanguard. <a href="https://davisvanguard.org/2026/10/judge-holds-immigration-officials-contempt/">https://davisvanguard.org/2026/10/judge-holds-immigration-officials-contempt/</a><span class="status">Unverified: blocked (HTTP 403), archive copy refused (HTTP 429). Title from the search listing. Given no weight.</span></li>
+  </ol>
+</section>
+
+<footer>
+  <p>Residual uncertainty: none of the court orders was opened at its source; their wording rests on MPR's reporting <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-3">[3]</a>. "We've been doing this since May" is a lawyer's account of an unnamed official's remark <a class="cite" href="#ref-1">[1]</a>. No documented immediate re-arrests outside Minnesota turned up in a bounded search, which is weak evidence of absence, not proof. A Pennsylvania civil-contempt ruling of 26 October 2026 over a re-arrest two months after release is reported only by a source this check could not open <a class="cite" href="#ref-9">[9]</a>, and it is given no weight. Tostrud's pending rulings, an Eighth Circuit appeal, or the Supreme Court's detention case could change the "unlawfully" row.</p>
+</footer>
+</main>

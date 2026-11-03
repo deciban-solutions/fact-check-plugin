@@ -16,12 +16,23 @@ What it does, in place:
 It exits 1, changing nothing, when a cited N has no Sources entry. It
 prints, without failing, any Sources entry that is never cited.
 --check reports the same problems without writing.
+--standalone also adds a doctype, a UTF-8 charset and a viewport line, for a
+page saved as a file instead of published as an Artifact.
 """
 from __future__ import annotations
 
 import argparse
 import re
 import sys
+
+# An Artifact host wraps the page in its own document head. A page saved as a
+# plain file has no such wrapper, and without a declared charset a browser
+# may read its curly quotes and dashes in a legacy encoding.
+STANDALONE_HEAD = """<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+"""
 
 CITE_CSS = """<style id="cite-links">
 a.cite { text-decoration: none; font-variant-numeric: tabular-nums; }
@@ -83,6 +94,9 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("page")
     ap.add_argument("--check", action="store_true", help="report problems without writing")
+    ap.add_argument("--standalone", action="store_true",
+                    help="also add a doctype, UTF-8 charset and viewport, for a page saved as a "
+                         "file rather than published as an Artifact")
     args = ap.parse_args()
 
     page = open(args.page, encoding="utf-8").read()
@@ -100,6 +114,8 @@ def main() -> int:
         return 0
     if 'id="cite-links"' not in page:
         page = page.replace("</style>", "</style>\n" + CITE_CSS, 1)
+    if args.standalone and not page.lstrip().lower().startswith("<!doctype"):
+        page = STANDALONE_HEAD + page.lstrip()
     with open(args.page, "w", encoding="utf-8") as fh:
         fh.write(page)
     print(f"Linked citations written to {args.page}")
